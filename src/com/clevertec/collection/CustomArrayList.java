@@ -16,11 +16,12 @@ import java.util.stream.IntStream;
 
 /**
  * Custom resizable-array implementation of {@link List} interface.
+ * Permits {@code null}.
  *
  * @param <E> type of contained list elements
  * @see ArrayList
  */
-public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializable {
+public class CustomArrayList<E> implements List<E>, RandomAccess, Serializable {
 
     /**
      * Default initial capacity.
@@ -39,7 +40,7 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Ser
 
     /**
      * Array buffer into which elements of list are stored.
-     * Capacity of list is length of this array buffer.
+     * Capacity of list is length of array buffer.
      */
     private E[] elementData;
 
@@ -55,7 +56,7 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Ser
      * Add element to list.
      * Increases current capacity of list, make it double if size equals length of elements array.
      *
-     * @param element element to be appended to this list
+     * @param element element to be appended to list
      * @return {@code true}
      */
     @Override
@@ -69,7 +70,7 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Ser
     }
 
     /**
-     * Returns element at specified position in this list.
+     * Returns element at specified position in list.
      *
      * @param index index of element to return
      * @return element at specified position in list
@@ -113,6 +114,47 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Ser
         }
 
         return removedElement;
+    }
+
+    /**
+     * Removes the first occurrence of the specified element with the lowest index from list if it is present.
+     *
+     * @param element element to be removed from list
+     * @return {@code true} if list contained specified element
+     */
+    @Override
+    public boolean remove(Object element) {
+        Integer elementIndex = null;
+
+        if (element == null) {
+            for (int i = 0; i < size; i++) {
+                if (element == elementData[i]) {
+                    elementIndex = i;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (element.equals(elementData[i])) {
+                    elementIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (elementIndex != null) {
+            size--;
+            if (size > 0) {
+                System.arraycopy(elementData, elementIndex + 1, elementData, elementIndex, size - elementIndex);
+            } else {
+                elementData = initArray();
+            }
+
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -189,11 +231,6 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Cloneable, Ser
 
     @Override
     public void add(int index, E element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean remove(Object o) {
         throw new UnsupportedOperationException();
     }
 

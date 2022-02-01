@@ -1,12 +1,15 @@
 package com.clevertec.collection;
 
+import java.util.List;
+
 public class Checker {
 
     public static void main(String... args) {
 
-        int operationNumber = 0;
+        List<Integer> list = init(new CustomArrayList<>());
+//        List<Integer> list = init(new CustomLinkedList<>());
 
-        CustomArrayList<Integer> list = init();
+        int operationNumber = 0;
 
         print(list, ++operationNumber);
 
@@ -25,10 +28,10 @@ public class Checker {
         removeByIndexOutOfRange(list, 11, ++operationNumber);
 
         getByIndexOutOfRange(list, 11, ++operationNumber);
+
     }
 
-    private static CustomArrayList<Integer> init() {
-        CustomArrayList<Integer> list = new CustomArrayList<>();
+    private static List<Integer> init(List<Integer> list) {
         list.add(1);
         list.add(2);
         list.add(3);
@@ -40,57 +43,56 @@ public class Checker {
         return list;
     }
 
-    private static void print(CustomArrayList<Integer> list, int operationNumber) {
+    private static void print(List<Integer> list, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Elements of custom ArrayList from toString():");
+        System.out.println("Elements of custom list from toString():");
         System.out.println(list);
-        System.out.println("------------------------------");
+        System.out.println("----------------------------------------");
     }
 
-    private static void printByIndex(CustomArrayList<Integer> list, int operationNumber) {
+    private static void printByIndex(List<Integer> list, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Elements of custom ArrayList by index: ");
+        System.out.println("Elements of custom list by index: ");
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("Element at index " + i + " = " + list.get(i));
+            System.out.println("Element at index [" + i + "] = " + list.get(i));
         }
-        System.out.println("------------------------------");
+        System.out.println("----------------------------------------");
     }
 
-    private static void removeElement(CustomArrayList<Integer> list, int elementIndexToRemove, int operationNumber) {
+    private static void removeElement(List<Integer> list, int elementIndexToRemove, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Removing element from custom ArrayList by index: ");
-        System.out.println("Element at index " + elementIndexToRemove + " = " + list.remove(elementIndexToRemove));
+        System.out.println("Removing element from custom list by index: ");
+        System.out.println("Element at index [" + elementIndexToRemove + "] = " + list.remove(elementIndexToRemove));
         if (list.size() > elementIndexToRemove) {
-            System.out.println("After removing element at index " + elementIndexToRemove + " = " + list.get(elementIndexToRemove));
+            System.out.println("After removing element at index [" + elementIndexToRemove + "] = " + list.get(elementIndexToRemove));
         } else {
-            System.out.println("Element at index " + elementIndexToRemove + " was last one in list");
+            System.out.println("Element at index [" + elementIndexToRemove + "] was last one in list");
         }
-        System.out.println("------------------------------");
+        System.out.println("----------------------------------------");
     }
 
-    private static void removeByIndexOutOfRange(CustomArrayList<Integer> list, int elementIndexToRemove, int operationNumber) {
+    private static void removeByIndexOutOfRange(List<Integer> list, int elementIndexToRemove, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Reproducing exception by remove element from custom ArrayList with index out of range: ");
+        System.out.println("Reproducing exception by remove element from custom list with index out of range: ");
         try {
             list.remove(elementIndexToRemove);
         } catch (IndexOutOfBoundsException ex) {
-            System.out.println("IndexOutOfBoundsException has been thrown because there is no element to remove on index "
-                    + elementIndexToRemove + ", list size = " + list.size());
+            System.out.println("IndexOutOfBoundsException has been thrown because there is no element to remove "
+                    + "on index [" + elementIndexToRemove + "], list size = " + list.size());
         }
-        System.out.println("------------------------------");
+        System.out.println("----------------------------------------");
     }
 
-    private static void getByIndexOutOfRange(CustomArrayList<Integer> list, int elementIndexToGet, int operationNumber) {
+    private static void getByIndexOutOfRange(List<Integer> list, int elementIndexToGet, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Reproducing exception by get element from custom ArrayList with index out of range: ");
+        System.out.println("Reproducing exception by get element from custom list with index out of range: ");
         try {
             list.get(elementIndexToGet);
         } catch (IndexOutOfBoundsException ex) {
-            System.out.println("IndexOutOfBoundsException has been thrown because there is no element to get on index "
-                    + elementIndexToGet + ", list size = " + list.size());
+            System.out.println("IndexOutOfBoundsException has been thrown because there is no element to get "
+                    + "on index [" + elementIndexToGet + "], list size = " + list.size());
         }
-        System.out.println("------------------------------");
+        System.out.println("----------------------------------------");
     }
-
 
 }
