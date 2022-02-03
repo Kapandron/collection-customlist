@@ -29,6 +29,8 @@ public class Checker {
 
         getByIndexOutOfRange(list, 11, ++operationNumber);
 
+        useInStream(list, ++operationNumber);
+
     }
 
     private static List<Integer> init(List<Integer> list) {
@@ -92,6 +94,14 @@ public class Checker {
             System.out.println("IndexOutOfBoundsException has been thrown because there is no element to get "
                     + "on index [" + elementIndexToGet + "], list size = " + list.size());
         }
+        System.out.println("----------------------------------------");
+    }
+
+    private static void useInStream(List<Integer> list, int operationNumber) {
+        System.out.print(operationNumber + ") ");
+        System.out.println("Use custom list with stream: ");
+        System.out.print("First element of list: ");
+        System.out.println(list.stream().findFirst().orElse(null));
         System.out.println("----------------------------------------");
     }
 

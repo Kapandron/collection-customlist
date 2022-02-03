@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
-import java.util.Spliterator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,7 +19,7 @@ import java.util.stream.IntStream;
  * @param <E> type of contained list elements
  * @see ArrayList
  */
-public class CustomArrayList<E> implements List<E>, RandomAccess, Serializable {
+public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>, RandomAccess, Serializable {
 
     /**
      * Default initial capacity.
@@ -204,17 +202,29 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Serializable {
         return (E[]) new Object[INITIAL_CAPACITY];
     }
 
-    @Override
-    public Iterator<E> iterator() {
-        throw new UnsupportedOperationException();
-    }
-
+    /**
+     * Returns {@code true} if list contains specified element.
+     *
+     * @param o element whose presence in list is to be tested
+     * @return {@code true} if list contains specified element
+     * @throws ClassCastException if type of specified element
+     *                            is incompatible with list
+     */
     @Override
     public boolean contains(Object o) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+    /**
+     * Returns index of the first occurrence of specified element with the lowest index
+     * in list or -1 if this list does not contain the element.
+     *
+     * @param o element to search for
+     * @return index of the first occurrence of specified element in
+     * list or -1 if list does not contain element
+     * @throws ClassCastException if type of specified element
+     *                            is incompatible with list
+     */
     public int indexOf(Object o) {
         throw new UnsupportedOperationException();
     }
@@ -290,12 +300,6 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Serializable {
     }
 
     @Override
-    public Spliterator<E> spliterator() {
-//        return List.super.spliterator();
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Object[] toArray() {
 //        return new Object[0];
         throw new UnsupportedOperationException();
@@ -305,5 +309,11 @@ public class CustomArrayList<E> implements List<E>, RandomAccess, Serializable {
     public <T> T[] toArray(T[] a) {
         throw new UnsupportedOperationException();
     }
+
+//    @Override
+//    public Spliterator<E> spliterator() {
+////        return List.super.spliterator();
+//        throw new UnsupportedOperationException();
+//    }
 
 }

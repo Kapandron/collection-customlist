@@ -2,19 +2,18 @@ package com.clevertec.collection;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Doubly-linked list implementation of {@link List} interface.
+ * Custom doubly-linked list implementation of {@link List} interface.
  * Permits {@code null}.
  *
  * @param <E> type of contained list elements
  * @see LinkedList
  */
-public class CustomLinkedList<E> implements List<E>, Serializable {
+public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E>, Serializable {
 
     /**
      * Number of elements list contains.
@@ -331,11 +330,6 @@ public class CustomLinkedList<E> implements List<E>, Serializable {
 
     @Override
     public boolean contains(Object o) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Iterator<E> iterator() {
         throw new UnsupportedOperationException();
     }
 
