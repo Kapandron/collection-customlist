@@ -17,8 +17,19 @@ import java.util.NoSuchElementException;
 public abstract class CustomAbstractList<E> implements List<E> {
 
     /**
+     * Number of elements list contains.
+     */
+    protected int size;
+
+    /**
+     * Initializes size for empty list.
+     */
+    public CustomAbstractList() {
+        size = 0;
+    }
+
+    /**
      * Returns iterator over elements in list.
-     * <p>
      * Method will throw {@link UnsupportedOperationException} in response to its
      * {@code remove} method unless {@code remove(int)} method is overridden.
      *
@@ -26,16 +37,6 @@ public abstract class CustomAbstractList<E> implements List<E> {
      */
     public Iterator<E> iterator() {
         return new Itr();
-    }
-
-    /**
-     * Always throws an {@code UnsupportedOperationException}.
-     * Need be overridden by subclasses implementation.
-     *
-     * @throws UnsupportedOperationException
-     */
-    public E remove(int index) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -102,6 +103,45 @@ public abstract class CustomAbstractList<E> implements List<E> {
             } catch (IndexOutOfBoundsException e) {
                 throw new ConcurrentModificationException();
             }
+        }
+    }
+
+    /**
+     * Always throws an {@code UnsupportedOperationException}.
+     * Need be overridden by subclasses implementation.
+     *
+     * @throws UnsupportedOperationException always
+     */
+    public E remove(int index) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns number of elements in list.
+     *
+     * @return number of elements in list
+     */
+    @Override
+    public int size() {
+        return size;
+    }
+
+    /**
+     * Returns {@code true} if list contains no elements.
+     *
+     * @return {@code true} if list contains no elements
+     */
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    /**
+     * Checks whether specified index is in range of list size.
+     */
+    protected void checkElementIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Element index = " + index + ", list size = " + size);
         }
     }
 

@@ -1,19 +1,32 @@
-package com.clevertec.collection;
+package com.clevertec.collection.concurrent;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
- * Custom doubly-linked list implementation of {@link List} interface.
+ * Thread-safe variant of custom doubly-linked list implementation of {@link List} interface.
  * Permits {@code null}.
  *
  * @param <E> type of contained list elements
  * @see LinkedList
  */
-public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E>, Serializable {
+public class ConcurrentCustomLinkedList<E> implements List<E>, Serializable {
+
+    /**
+     * Monitor protecting all mutators.
+     */
+    private final transient Object lock = new Object();
+
+    /**
+     * Number of elements list contains.
+     */
+    private volatile int size;
 
     /**
      * Pointer to first node.
@@ -28,7 +41,7 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
     /**
      * Constructs an empty list.
      */
-    public CustomLinkedList() {
+    public ConcurrentCustomLinkedList() {
         super();
     }
 
@@ -72,17 +85,19 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
      */
     @Override
     public boolean add(E element) {
-        final Node<E> last = tail;
-        final Node<E> newNode = new Node<>(element, last, null);
-        tail = newNode;
+        synchronized (lock) {
+            final Node<E> last = tail;
+            final Node<E> newNode = new Node<>(element, last, null);
+            tail = newNode;
 
-        if (last == null) {
-            head = newNode;
-        } else {
-            last.next = newNode;
+            if (last == null) {
+                head = newNode;
+            } else {
+                last.next = newNode;
+            }
+
+            size++;
         }
-
-        size++;
 
         return true;
     }
@@ -97,7 +112,88 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
      */
     @Override
     public E get(int index) {
-        return getNodeByIndex(index).element;
+        synchronized (lock) {
+            return getNodeByIndex(index).element;
+        }
+    }
+
+
+    /**
+     * Returns iterator over elements in list.
+     * Method will throw {@link UnsupportedOperationException} in response to its
+     * {@code remove} method unless {@code remove(int)} method is overridden.
+     *
+     * @return iterator over elements in list
+     */
+    public Iterator<E> iterator() {
+        return new ConcurrentCustomLinkedList<E>.Itr();
+    }
+
+    /**
+     * Iterator over list implementing {@link Iterator} interface.
+     */
+    private class Itr implements Iterator<E> {
+        /**
+         * Index of element to be returned by subsequent call to next.
+         */
+        int cursor = 0;
+
+        /**
+         * Index of element returned by most recent call to next or previous.
+         * Reset to -1 if this element is deleted by call to remove.
+         */
+        int lastReturned = -1;
+
+        /**
+         * Returns {@code true} if iteration has more elements.
+         *
+         * @return {@code true} if iteration has more elements
+         */
+        public boolean hasNext() {
+            return cursor != size();
+        }
+
+        /**
+         * Returns the next element in iteration.
+         *
+         * @return the next element in iteration
+         * @throws NoSuchElementException if iteration has no more elements
+         */
+        public E next() {
+            try {
+                int i = cursor;
+                E next = get(i);
+                lastReturned = i;
+                cursor = i + 1;
+                return next;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
+        }
+
+        /**
+         * Removes from list the last element returned by iterator.
+         *
+         * @throws IllegalStateException if {@code next} method has not
+         *                               yet been called or {@code remove} method has already
+         *                               been called after the last call to {@code next} method
+         */
+        public void remove() {
+            if (lastReturned < 0) {
+                throw new IllegalStateException();
+            }
+
+            try {
+                ConcurrentCustomLinkedList.this.remove(lastReturned);
+                if (lastReturned < cursor) {
+                    cursor--;
+                }
+
+                lastReturned = -1;
+            } catch (IndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException();
+            }
+        }
     }
 
     /**
@@ -110,7 +206,9 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
      */
     @Override
     public E remove(int index) {
-        return unlink(getNodeByIndex(index));
+        synchronized (lock) {
+            return unlink(getNodeByIndex(index));
+        }
     }
 
     /**
@@ -121,23 +219,45 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
      */
     @Override
     public boolean remove(Object element) {
-        if (element == null) {
-            for (Node<E> node = head; node != null; node = node.next) {
-                if (node.element == null) {
-                    unlink(node);
-                    return true;
+        synchronized (lock) {
+            if (element == null) {
+                for (Node<E> node = head; node != null; node = node.next) {
+                    if (node.element == null) {
+                        unlink(node);
+                        return true;
+                    }
                 }
-            }
-        } else {
-            for (Node<E> node = head; node != null; node = node.next) {
-                if (element.equals(node.element)) {
-                    unlink(node);
-                    return true;
+            } else {
+                for (Node<E> node = head; node != null; node = node.next) {
+                    if (element.equals(node.element)) {
+                        unlink(node);
+                        return true;
+                    }
                 }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Returns number of elements in list.
+     *
+     * @return number of elements in list
+     */
+    @Override
+    public int size() {
+        return size;
+    }
+
+    /**
+     * Returns {@code true} if list contains no elements.
+     *
+     * @return {@code true} if list contains no elements
+     */
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     /**
@@ -187,6 +307,15 @@ public class CustomLinkedList<E> extends CustomAbstractList<E> implements List<E
         }
 
         return node;
+    }
+
+    /**
+     * Checks whether specified index is in range of list size.
+     */
+    private void checkElementIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Element index = " + index + ", list size = " + size);
+        }
     }
 
     /**

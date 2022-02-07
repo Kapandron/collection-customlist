@@ -24,17 +24,12 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
     /**
      * Default initial capacity.
      */
-    private static final int INITIAL_CAPACITY = 10;
+    private static final int INITIAL_CAPACITY = 8;
 
     /**
      * Multiplayer to increase capacity of list.
      */
     private static final int INCREASING_ARRAY_SIZE_MULTIPLAYER = 2;
-
-    /**
-     * Number of elements list contains.
-     */
-    private int size;
 
     /**
      * Array buffer into which elements of list are stored.
@@ -46,7 +41,7 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
      * Constructs empty list with initial capacity.
      */
     public CustomArrayList() {
-        size = 0;
+        super();
         elementData = initArray();
     }
 
@@ -77,9 +72,7 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
      */
     @Override
     public E get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("getting by index = " + index + ", but list size = " + index);
-        }
+        checkElementIndex(index);
 
         return elementData[index];
     }
@@ -94,9 +87,7 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
      */
     @Override
     public E remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("getting by index = " + index + ", but list size = " + index);
-        }
+        checkElementIndex(index);
 
         E removedElement = elementData[index];
 
@@ -156,26 +147,6 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
     }
 
     /**
-     * Returns number of elements in list.
-     *
-     * @return number of elements in list
-     */
-    @Override
-    public int size() {
-        return size;
-    }
-
-    /**
-     * Returns {@code true} if list contains no elements.
-     *
-     * @return {@code true} if list contains no elements
-     */
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    /**
      * Returns string representation of list.
      *
      * @return string representation of list
@@ -198,6 +169,7 @@ public class CustomArrayList<E> extends CustomAbstractList<E> implements List<E>
     /**
      * Returns empty array with specified initial capacity.
      */
+    @SuppressWarnings("unchecked")
     private E[] initArray() {
         return (E[]) new Object[INITIAL_CAPACITY];
     }
