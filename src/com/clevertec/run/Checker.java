@@ -1,4 +1,7 @@
-package com.clevertec.collection;
+package com.clevertec.run;
+
+import com.clevertec.collection.CustomArrayList;
+import com.clevertec.collection.CustomLinkedList;
 
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class Checker {
 
     }
 
-    private static List<Integer> init(List<Integer> list) {
+    public static List<Integer> init(List<Integer> list) {
         list.add(1);
         list.add(2);
         list.add(3);
@@ -45,14 +48,14 @@ public class Checker {
         return list;
     }
 
-    private static void print(List<Integer> list, int operationNumber) {
+    public static void print(List<Integer> list, int operationNumber) {
         System.out.print(operationNumber + ") ");
         System.out.println("Elements of custom list from toString():");
         System.out.println(list);
         System.out.println("----------------------------------------");
     }
 
-    private static void printByIndex(List<Integer> list, int operationNumber) {
+    public static void printByIndex(List<Integer> list, int operationNumber) {
         System.out.print(operationNumber + ") ");
         System.out.println("Elements of custom list by index: ");
         for (int i = 0; i < list.size(); i++) {
@@ -61,7 +64,7 @@ public class Checker {
         System.out.println("----------------------------------------");
     }
 
-    private static void removeElement(List<Integer> list, int elementIndexToRemove, int operationNumber) {
+    public static void removeElement(List<Integer> list, int elementIndexToRemove, int operationNumber) {
         System.out.print(operationNumber + ") ");
         System.out.println("Removing element from custom list by index: ");
         System.out.println("Element at index [" + elementIndexToRemove + "] = " + list.remove(elementIndexToRemove));
@@ -73,7 +76,7 @@ public class Checker {
         System.out.println("----------------------------------------");
     }
 
-    private static void removeByIndexOutOfRange(List<Integer> list, int elementIndexToRemove, int operationNumber) {
+    public static void removeByIndexOutOfRange(List<Integer> list, int elementIndexToRemove, int operationNumber) {
         System.out.print(operationNumber + ") ");
         System.out.println("Reproducing exception by remove element from custom list with index out of range: ");
         try {
@@ -85,7 +88,7 @@ public class Checker {
         System.out.println("----------------------------------------");
     }
 
-    private static void getByIndexOutOfRange(List<Integer> list, int elementIndexToGet, int operationNumber) {
+    public static void getByIndexOutOfRange(List<Integer> list, int elementIndexToGet, int operationNumber) {
         System.out.print(operationNumber + ") ");
         System.out.println("Reproducing exception by get element from custom list with index out of range: ");
         try {
@@ -97,9 +100,9 @@ public class Checker {
         System.out.println("----------------------------------------");
     }
 
-    private static void useInStream(List<Integer> list, int operationNumber) {
+    public static void useInStream(List<Integer> list, int operationNumber) {
         System.out.print(operationNumber + ") ");
-        System.out.println("Use custom list with stream: ");
+        System.out.println("Using custom list with stream: ");
         System.out.print("First element of list: ");
         System.out.println(list.stream().findFirst().orElse(null));
         System.out.println("----------------------------------------");
